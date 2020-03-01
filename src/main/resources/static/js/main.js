@@ -70,16 +70,6 @@ function deleteTeacher(id) {
     });
 }
 
-//To edit a teacher from the list
-// function editTeacher(teacherId) {
-//     let editedTeacher = {
-//         id: teacherId,
-//         name:
-//     }
-
-//     $.ajax({});
-// }
-
 
 //To list the courses in the table
 function getCourses() {
@@ -89,9 +79,10 @@ function getCourses() {
             $("#getCoursesTableBody").append(
                 '<tr id="row' + course.id + '" class="table-active"><td>' + course.id + '</td>' +
                 '<td>' + course.name + '</td>' +
-                '<td>' + course.teacher.name + '</td>' +
+                '<td>' + JSON.stringify(course.teacher) + '</td>' +
                 '<td><button class="btn btn-danger" onclick="deleteCourse(' + course.id + ')">Delete</button></td></tr>'
             );
+            console.log(JSON.stringify(course.teacher));
         });
     });
 }
@@ -112,35 +103,37 @@ function deleteCourse(courseId) {
 
 //To add course:
 function addCourse() {
-    console.log($("#assignTeacherList").val());
+    console.log($("#assignTeacherList option:selected").text());
     let newCourse = {
         name: $("#addCourseInput").val(),
-        teacher: $("#assignTeacherList").val()
+        // teacher: $("#assignTeacherList option:selected").val()
+        teacher: { id: $("#assignTeacherList").val() }
     }
 
     let jsonObject = JSON.stringify(newCourse);
     console.log(jsonObject);
 
     $.ajax({
-        url: 'api/course',
+        url: "api/course",
         type: "POST",
         contentType: "application/json",
         data: jsonObject,
         success: function() {
-            alert('Course added successfully!');
+            alert("Course added successfully!");
         },
         error: function() {
-            alert('ERROR!');
+            alert("ERROR!");
         }
     });
 }
 
 //To list teachers in add course form
+// let teacherName = "";
 function listTeachersDropMenu() {
     $.get('api/teacher', function(teachers) {
         $.each(teachers, function(index, teacher) {
             $("#assignTeacherList").append(
-                new Option(teacher.name, teacher.name)
+                new Option(teacher.name, teacher.id)
             );
         });
     });

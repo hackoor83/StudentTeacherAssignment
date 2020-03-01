@@ -2,10 +2,7 @@ package com.example.SpringBootSQLTraining.models;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 @Entity
 public class Course {
@@ -42,6 +39,6 @@ public class Course {
     }
 
     public void setTeacher(Teacher teacher) {
-        this.teacher.setName(teacher.name);
+        this.teacher = teacher;
     }
 }

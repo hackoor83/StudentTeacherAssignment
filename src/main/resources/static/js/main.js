@@ -37,22 +37,52 @@ function getTeachers() {
         $.each(teachers, function(index, teacher) {
             $("#getTeachersTableBody").append(
                 '<tr id="row' + teacher.id + '"class="table-active"><td>' + teacher.id + '</td>' +
-                '<td><input class="form-control" id="inputRow ' + teacher.id + ' " type="text" disabled=' + true + '  placeholder=" ' + teacher.name + ' "></td>' +
+                '<td><input class="form-control" id="inputRow' + teacher.id + '" type="text" disabled="' + true + '"  placeholder="' + teacher.name + ' "></td>' +
                 '<td><button class="btn btn-danger" onclick="deleteTeacher(' + teacher.id + ')">Delete</button>' +
-                '<button class= "btn btn-outline-danger" onclick = "editTeacher(' + teacher.id + ')">Edit</button></td></tr>'
-                // '<button class= "btn btn-outline-danger" onclick = "' + function() { $("#inputRow" + teacher.id).attr("disabled", false); } + '">Edit</button></td></tr>'
+                '<button class= "btn btn-outline-danger" onclick="editTeacher(' + teacher.id + ')">Edit</button></td></tr>'
             );
         });
     });
 }
 
-//To edit teacher name:
+//To activate teacher name editing:
+function editTeacher(teacherId) {
+    console.log('the id is: ' + teacherId);
+    $("#inputRow" + teacherId).attr("disabled", false);
+    // $("#inputRow" + teacherId).after('<button id="editConfirmButton" class="btn btn-primary btn-sm" onclick="confirmEdit(' + teacherId + ',' + newInputValue + ')">Confirm</button>');
+    $("#inputRow" + teacherId).after('<button id="editConfirmButton" class="btn btn-primary btn-sm" onclick="confirmEdit(' + teacherId + ')">Confirm</button>');
 
-function editTeacher(id) {
-    // document.getElementById("inputRow" + id).disabled(false);
-    // console.log('AFTER' + disabledValue);
-    $("#inputRow" + id).prop("disabled", false);
-    // return false;
+}
+
+//to edit and confirm teacher name edit
+function confirmEdit(id) {
+    let newInputValue = $("#inputRow" + id).val();
+    console.log('the new input value is: ' + newInputValue);
+    console.log('the id in confirmEdit is: ' + id);
+    console.log('the new input value in confirmEdit is: ' + newInputValue);
+
+    let teacherNameEdited = {
+        id: id,
+        name: newInputValue
+    }
+
+    let jsonObject = JSON.stringify(teacherNameEdited);
+
+    $.ajax({
+        url: 'api/teacher/update/' + id,
+        type: 'PUT',
+        contentType: 'application/json',
+        data: jsonObject,
+        success: function() {
+            alert('Teacher name updated');
+            $("#editConfirmButton").hide();
+            $("#inputRow" + id).attr("disabled", true);
+
+        },
+        error: function() {
+            alert('ERROR: Not updated');
+        }
+    });
 }
 
 //To remove a teacher from the list
@@ -79,7 +109,7 @@ function getCourses() {
             $("#getCoursesTableBody").append(
                 '<tr id="row' + course.id + '" class="table-active"><td>' + course.id + '</td>' +
                 '<td>' + course.name + '</td>' +
-                '<td>' + JSON.stringify(course.teacher) + '</td>' +
+                '<td>' + (course.teacher ? course.teacher.name : 'No teacher') + '</td>' +
                 '<td><button class="btn btn-danger" onclick="deleteCourse(' + course.id + ')">Delete</button></td></tr>'
             );
             console.log(JSON.stringify(course.teacher));

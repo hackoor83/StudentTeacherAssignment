@@ -29,10 +29,10 @@ public class TeacherController {
         teacherRepository.deleteById(id);
     }
 
-//    @PutMapping("/update/{id}")
-//    public void updateTeacher(@RequestBody Teacher teacher, @PathVariable Long id){
-//        teacher.setId(id);
-//        teacherRepository.save(teacher);
-//    }
+    @PutMapping("/update/{id}")
+    public void updateTeacher(@RequestBody Teacher teacher, @PathVariable Long id){
+        teacher.setId(id);
+        teacherRepository.save(teacher);
+    }
 
 }
